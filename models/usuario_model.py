@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from core.configs import settings
+from sqlalchemy.orm import relationship
 import datetime
 
 class UsuarioModel(settings.DBBaseModel):
@@ -10,3 +11,8 @@ class UsuarioModel(settings.DBBaseModel):
     senha: str = Column(String(255), nullable= False)
     criado_em: str = Column(DateTime, nullable= True)
     atualizado_em: str = Column(DateTime, nullable= True)
+    tarefas = relationship(
+        'TarefaModel',
+        cascade='all,delete-orphan',
+        uselist=True,
+        lazy='joined')

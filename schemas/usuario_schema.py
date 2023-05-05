@@ -1,8 +1,8 @@
-import api.v1.endpoints
 import datetime
 from typing import Optional, List
 from pydantic import BaseModel as SCBaseModel, EmailStr
 from datetime import datetime
+from schemas.tarefa_schema import TarefaSchema
 
 class UsuarioSchemaBase(SCBaseModel):
     id: Optional[int]
@@ -29,6 +29,10 @@ class UsuarioSchemaToken(SCBaseModel):
     usuario: UsuarioSchemaBase
     acess_token: str
 
+
+class UsuarioSchemaTarefa(UsuarioSchemaBase):
+    tarefas: List[TarefaSchema]
+    
     
     
 

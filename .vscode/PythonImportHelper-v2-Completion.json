@@ -169,6 +169,22 @@
         "documentation": {}
     },
     {
+        "label": "File",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
+        "label": "UploadFile",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
         "label": "APIRouter",
         "importPath": "fastapi",
         "description": "fastapi",
@@ -418,7 +434,7 @@
         "documentation": {}
     },
     {
-        "label": "Tarefa",
+        "label": "TarefaModel",
         "importPath": "models.tarefa_model",
         "description": "models.tarefa_model",
         "isExtraImport": true,
@@ -611,6 +627,14 @@
         "documentation": {}
     },
     {
+        "label": "TarefaSchema",
+        "importPath": "schemas.tarefa_schema",
+        "description": "schemas.tarefa_schema",
+        "isExtraImport": true,
+        "detail": "schemas.tarefa_schema",
+        "documentation": {}
+    },
+    {
         "label": "criar_acess_token",
         "importPath": "core.auth",
         "description": "core.auth",
@@ -716,6 +740,14 @@
     },
     {
         "label": "declarative_base",
+        "importPath": "sqlalchemy.orm",
+        "description": "sqlalchemy.orm",
+        "isExtraImport": true,
+        "detail": "sqlalchemy.orm",
+        "documentation": {}
+    },
+    {
+        "label": "relationship",
         "importPath": "sqlalchemy.orm",
         "description": "sqlalchemy.orm",
         "isExtraImport": true,
@@ -1030,7 +1062,7 @@
         "kind": 6,
         "importPath": "models.usuario_model",
         "description": "models.usuario_model",
-        "peekOfCode": "class UsuarioModel(settings.DBBaseModel):\n    __tablename__ = 'usuarios' \n    id: int = Column(Integer, primary_key=True, autoincrement=True)\n    nome: str = Column(String(255), nullable= True)\n    email: str = Column(String(255), nullable=False, unique=True)\n    senha: str = Column(String(255), nullable= False)\n    criado_em: str = Column(DateTime, nullable= True)\n    atualizado_em: str = Column(DateTime, nullable= True)",
+        "peekOfCode": "class UsuarioModel(settings.DBBaseModel):\n    __tablename__ = 'usuarios' \n    id: int = Column(Integer, primary_key=True, autoincrement=True)\n    nome: str = Column(String(255), nullable= True)\n    email: str = Column(String(255), nullable=False, unique=True)\n    senha: str = Column(String(255), nullable= False)\n    criado_em: str = Column(DateTime, nullable= True)\n    atualizado_em: str = Column(DateTime, nullable= True)\n    tarefas = relationship(\n        'TarefaModel',",
         "detail": "models.usuario_model",
         "documentation": {}
     },
@@ -1066,7 +1098,7 @@
         "kind": 6,
         "importPath": "schemas.usuario_schema",
         "description": "schemas.usuario_schema",
-        "peekOfCode": "class LoginData(SCBaseModel):\n    email: EmailStr\n    senha: str \nclass UsuarioSchemaToken(SCBaseModel):\n    usuario: UsuarioSchemaBase\n    acess_token: str",
+        "peekOfCode": "class LoginData(SCBaseModel):\n    email: EmailStr\n    senha: str \nclass UsuarioSchemaToken(SCBaseModel):\n    usuario: UsuarioSchemaBase\n    acess_token: str\nclass UsuarioSchemaTarefa(UsuarioSchemaBase):\n    tarefas: List[TarefaSchema]",
         "detail": "schemas.usuario_schema",
         "documentation": {}
     },
@@ -1075,7 +1107,16 @@
         "kind": 6,
         "importPath": "schemas.usuario_schema",
         "description": "schemas.usuario_schema",
-        "peekOfCode": "class UsuarioSchemaToken(SCBaseModel):\n    usuario: UsuarioSchemaBase\n    acess_token: str",
+        "peekOfCode": "class UsuarioSchemaToken(SCBaseModel):\n    usuario: UsuarioSchemaBase\n    acess_token: str\nclass UsuarioSchemaTarefa(UsuarioSchemaBase):\n    tarefas: List[TarefaSchema]",
+        "detail": "schemas.usuario_schema",
+        "documentation": {}
+    },
+    {
+        "label": "UsuarioSchemaTarefa",
+        "kind": 6,
+        "importPath": "schemas.usuario_schema",
+        "description": "schemas.usuario_schema",
+        "peekOfCode": "class UsuarioSchemaTarefa(UsuarioSchemaBase):\n    tarefas: List[TarefaSchema]",
         "detail": "schemas.usuario_schema",
         "documentation": {}
     },

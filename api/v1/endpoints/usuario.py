@@ -1,6 +1,6 @@
 import api.v1.endpoints
 from typing import List
-from fastapi import APIRouter, status, Depends, HTTPException, Response
+from fastapi import APIRouter, status, Depends, HTTPException, Response, File, UploadFile
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.future import select
 from models.usuario_model import UsuarioModel
@@ -55,7 +55,7 @@ async def get_usuarios(db: AsyncSession = Depends(get_session), usuarioLogado = 
         usuarios: List[UsuarioSchemaBase] = result.scalars().unique().all()
         return usuarios
     
-@router.get('/{id}', response_model=UsuarioSchemaBase)
+@router.get('/{id}', response_model=UsuarioSchemaTarefa)
 async def get_usuario(id: int, db: AsyncSession = Depends(get_session), usuarioLogado = Depends(get_current_user)):
     async with db as session:
         query = select(UsuarioModel).filter(UsuarioModel.id == id)
@@ -97,5 +97,3 @@ async def put_usuario(id: int, usuario: UsuarioSchemaCreate,db: AsyncSession = D
         else:
             raise HTTPException(detail='Usuário não encontrado',
                                 status_code=status.HTTP_404_NOT_FOUND)
-        
-
