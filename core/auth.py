@@ -17,18 +17,18 @@ SECRET_KEY: str = 'j7kUqCye2TUYwX7IsjE4Yx718l0FNbBAwKyuJ32G2es'
 ALGORITH: str = 'HS256'
 EXPIRES_IN_MIN = 60*24*7
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/usuarios/login")
 
 def criar_acess_token(usuario_id: str):
-    payload = {}
-    payload['sub'] = usuario_id
     expiracao = str(datetime.utcnow() + timedelta(EXPIRES_IN_MIN))
-    payload['ext'] = expiracao
-
+    payload = {
+        'sub': usuario_id,
+        'ext': expiracao
+        }
     token_jwt = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITH)
     return token_jwt
 
-async def get_current_user(token: str = Depends(oauth2_scheme), db = Depends(get_session)):
+async def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession = Depends(get_session)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Não Autenticado",

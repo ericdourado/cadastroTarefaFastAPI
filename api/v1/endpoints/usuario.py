@@ -1,7 +1,10 @@
 import api.v1.endpoints
+import fastapi.security
+import pydantic
 from typing import List
-from fastapi import APIRouter, status, Depends, HTTPException, Response, File, UploadFile
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from fastapi import APIRouter, status, Depends, HTTPException, Response, File, UploadFile, Form
+from fastapi.responses import FileResponse
+from sqlalchemy.ext.asyncio import  AsyncSession
 from sqlalchemy.future import select
 from models.usuario_model import UsuarioModel
 from core.deps import get_session
@@ -10,34 +13,53 @@ from datetime import datetime
 from sqlalchemy.exc import IntegrityError
 from schemas.usuario_schema import * 
 from core.auth import criar_acess_token, get_current_user
+from fastapi.security import OAuth2PasswordRequestForm
+import uuid
+import os
 
-router = APIRouter()
 
 
-@router.get('/me')
+
+router = APIRouter(dependencies=[Depends(get_current_user)])
+routerLogin = APIRouter()
+
+@router.get('/me', response_model=UsuarioSchemaBase)
 async def me(usuario = Depends(get_current_user)):
     return usuario
     
-    
-@router.post('/login', response_model=UsuarioSchemaToken)
-async def autentica_user(logindata: LoginData,db: AsyncSession = Depends(get_session)):
+@routerLogin.post('/login')
+async def autentica_user(OAuth2PasswordRequestForm: OAuth2PasswordRequestForm = Depends(),db: AsyncSession = Depends(get_session)):
     async with db as session:
-        query = select(UsuarioModel).filter(UsuarioModel.email == logindata.email)
+        query = select(UsuarioModel).filter(UsuarioModel.email == OAuth2PasswordRequestForm.username)
         result = await session.execute(query)
         usuario: UsuarioSchemaBase = result.scalars().unique().one_or_none()
     
-        if(usuario and (comparar_senha(logindata.senha, usuario.senha))):
+        if(usuario and (comparar_senha(OAuth2PasswordRequestForm.password, usuario.senha))):
             token = criar_acess_token(str(usuario.id))
-            return UsuarioSchemaToken(usuario = usuario,acess_token=token)
+            return {
+                "access_token": token,
+                "token_type": "bearer"
+            }
         else:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Usuário não encontrado")    
 
             
-            
 @router.post('/signup', status_code=status.HTTP_201_CREATED, response_model=UsuarioSchemaBase)
-async def post_usuario(usuario: UsuarioSchemaCreate, db: AsyncSession = Depends(get_session)):
+async def post_usuario(nome = Form(...), email = Form(...), senha = Form(...),db: AsyncSession = Depends(get_session), file: UploadFile = File(..., media_type='image/jpeg')):
+    file.filename = f"{uuid.uuid4()}.jpg"
+    contents = await file.read()
+    dir = os.path.abspath('./assets/image/')
+    
+    with open(f"{dir}{file.filename}", "wb") as f:
+        f.write(contents)
+
     novo_usuario: UsuarioModel = UsuarioModel(
-        nome=usuario.nome, email=usuario.email, senha=gerar_hash_senha(usuario.senha), criado_em = str(datetime.now()), atualizado_em = str(datetime.now()))
+        nome=nome, 
+        email=email,
+        imagem= f"{dir}{file.filename}", 
+        senha=gerar_hash_senha(senha), 
+        criado_em = str(datetime.now()), 
+        atualizado_em = str(datetime.now()))
     async with db as session:
         try:
             session.add(novo_usuario)
@@ -81,19 +103,45 @@ async def delete_usuario(id: int, db: AsyncSession = Depends(get_session), usuar
             raise HTTPException(detail='Usuário não encontrado',
                                 status_code=status.HTTP_404_NOT_FOUND)
         
-@router.put('/{id}', response_model=UsuarioSchemaBase ,status_code= status.HTTP_202_ACCEPTED)
-async def put_usuario(id: int, usuario: UsuarioSchemaCreate,db: AsyncSession = Depends(get_session), usuarioLogado = Depends(get_current_user)):
+@router.put('/{id}' ,status_code= status.HTTP_202_ACCEPTED, response_model=UsuarioSchemaBase)
+async def put_usuario(id: int, nome = Form(...), email = Form(...), senha = Form(...) , file: UploadFile = File(..., media_type='image/jpeg'), db: AsyncSession = Depends(get_session), usuarioLogado = Depends(get_current_user)):
     async with db as session:
         query = select(UsuarioModel).filter(UsuarioModel.id == id)
         result = await session.execute(query)
         usuario_update: UsuarioSchemaCreate = result.scalars().unique().one_or_none()
-        if usuario:
-            usuario_update.nome = usuario.nome
-            usuario_update.email = usuario.email 
-            usuario_update.senha = usuario.senha
+
+        if os.path.exists(usuario_update.imagem):
+            os.remove(usuario_update.imagem)
+            
+        file.filename = f"{uuid.uuid4()}.jpg"
+        contents = await file.read()
+        dir = os.path.abspath('./assets/image/')
+        
+        with open(f"{dir}{file.filename}", "wb") as f:
+            f.write(contents)
+
+        if usuario_update:
+            usuario_update.nome = nome
+            usuario_update.email = email 
+            usuario_update.senha = senha
+            usuario_update.imagem = f"{dir}{file.filename}"
             usuario_update.atualizado_em = str(datetime.now())
             await session.commit()
             return usuario_update
         else:
             raise HTTPException(detail='Usuário não encontrado',
                                 status_code=status.HTTP_404_NOT_FOUND)
+
+
+
+@router.post("/upload")
+async def create_upload_file(file: UploadFile = File(...)):
+ 
+    file.filename = f"{uuid.uuid4()}.jpg"
+    contents = await file.read()
+    dir = os.path.abspath('./assets/image/')
+    
+    with open(f"{dir}{file.filename}", "wb") as f:
+        f.write(contents)
+    return {"filename": file.filename}
+ 

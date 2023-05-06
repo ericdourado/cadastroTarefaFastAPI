@@ -8,6 +8,7 @@ class UsuarioSchemaBase(SCBaseModel):
     id: Optional[int]
     nome: str
     email: str
+    imagem: Optional[str]
     criado_em: Optional[datetime]
     atualizado_em: Optional[datetime]
 
@@ -20,15 +21,9 @@ class UsuarioSchemaCreate(UsuarioSchemaBase):
     class Config:
         orm_mode = True
 
-
-class LoginData(SCBaseModel):
-    email: EmailStr
-    senha: str 
-
 class UsuarioSchemaToken(SCBaseModel):
     usuario: UsuarioSchemaBase
     acess_token: str
-
 
 class UsuarioSchemaTarefa(UsuarioSchemaBase):
     tarefas: List[TarefaSchema]

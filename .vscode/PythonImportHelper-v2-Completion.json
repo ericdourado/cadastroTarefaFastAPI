@@ -185,6 +185,14 @@
         "documentation": {}
     },
     {
+        "label": "Form",
+        "importPath": "fastapi",
+        "description": "fastapi",
+        "isExtraImport": true,
+        "detail": "fastapi",
+        "documentation": {}
+    },
+    {
         "label": "APIRouter",
         "importPath": "fastapi",
         "description": "fastapi",
@@ -267,14 +275,6 @@
     },
     {
         "label": "AsyncSession",
-        "importPath": "sqlalchemy.ext.asyncio",
-        "description": "sqlalchemy.ext.asyncio",
-        "isExtraImport": true,
-        "detail": "sqlalchemy.ext.asyncio",
-        "documentation": {}
-    },
-    {
-        "label": "create_async_engine",
         "importPath": "sqlalchemy.ext.asyncio",
         "description": "sqlalchemy.ext.asyncio",
         "isExtraImport": true,
@@ -667,11 +667,20 @@
         "documentation": {}
     },
     {
-        "label": "jwt",
-        "importPath": "jose",
-        "description": "jose",
+        "label": "fastapi.security",
+        "kind": 6,
         "isExtraImport": true,
-        "detail": "jose",
+        "importPath": "fastapi.security",
+        "description": "fastapi.security",
+        "detail": "fastapi.security",
+        "documentation": {}
+    },
+    {
+        "label": "OAuth2PasswordRequestForm",
+        "importPath": "fastapi.security",
+        "description": "fastapi.security",
+        "isExtraImport": true,
+        "detail": "fastapi.security",
         "documentation": {}
     },
     {
@@ -691,11 +700,12 @@
         "documentation": {}
     },
     {
-        "label": "JWTError",
-        "importPath": "jose.exceptions",
-        "description": "jose.exceptions",
+        "label": "pydantic",
+        "kind": 6,
         "isExtraImport": true,
-        "detail": "jose.exceptions",
+        "importPath": "pydantic",
+        "description": "pydantic",
+        "detail": "pydantic",
         "documentation": {}
     },
     {
@@ -736,6 +746,48 @@
         "description": "pydantic",
         "isExtraImport": true,
         "detail": "pydantic",
+        "documentation": {}
+    },
+    {
+        "label": "FileResponse",
+        "importPath": "fastapi.responses",
+        "description": "fastapi.responses",
+        "isExtraImport": true,
+        "detail": "fastapi.responses",
+        "documentation": {}
+    },
+    {
+        "label": "uuid",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "uuid",
+        "description": "uuid",
+        "detail": "uuid",
+        "documentation": {}
+    },
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "jwt",
+        "importPath": "jose",
+        "description": "jose",
+        "isExtraImport": true,
+        "detail": "jose",
+        "documentation": {}
+    },
+    {
+        "label": "JWTError",
+        "importPath": "jose.exceptions",
+        "description": "jose.exceptions",
+        "isExtraImport": true,
+        "detail": "jose.exceptions",
         "documentation": {}
     },
     {
@@ -915,15 +967,6 @@
         "documentation": {}
     },
     {
-        "label": "os",
-        "kind": 6,
-        "isExtraImport": true,
-        "importPath": "os",
-        "description": "os",
-        "detail": "os",
-        "documentation": {}
-    },
-    {
         "label": "sys",
         "kind": 6,
         "isExtraImport": true,
@@ -963,7 +1006,16 @@
         "kind": 5,
         "importPath": "api.v1.endpoints.usuario",
         "description": "api.v1.endpoints.usuario",
-        "peekOfCode": "router = APIRouter()\n@router.get('/me')\nasync def me(usuario = Depends(get_current_user)):\n    return usuario\n@router.post('/login', response_model=UsuarioSchemaToken)\nasync def autentica_user(logindata: LoginData,db: AsyncSession = Depends(get_session)):\n    async with db as session:\n        query = select(UsuarioModel).filter(UsuarioModel.email == logindata.email)\n        result = await session.execute(query)\n        usuario: UsuarioSchemaBase = result.scalars().unique().one_or_none()",
+        "peekOfCode": "router = APIRouter(dependencies=[Depends(get_current_user)])\nrouterLogin = APIRouter()\n@router.get('/me', response_model=UsuarioSchemaBase)\nasync def me(usuario = Depends(get_current_user)):\n    return usuario\n@routerLogin.post('/login')\nasync def autentica_user(OAuth2PasswordRequestForm: OAuth2PasswordRequestForm = Depends(),db: AsyncSession = Depends(get_session)):\n    async with db as session:\n        query = select(UsuarioModel).filter(UsuarioModel.email == OAuth2PasswordRequestForm.username)\n        result = await session.execute(query)",
+        "detail": "api.v1.endpoints.usuario",
+        "documentation": {}
+    },
+    {
+        "label": "routerLogin",
+        "kind": 5,
+        "importPath": "api.v1.endpoints.usuario",
+        "description": "api.v1.endpoints.usuario",
+        "peekOfCode": "routerLogin = APIRouter()\n@router.get('/me', response_model=UsuarioSchemaBase)\nasync def me(usuario = Depends(get_current_user)):\n    return usuario\n@routerLogin.post('/login')\nasync def autentica_user(OAuth2PasswordRequestForm: OAuth2PasswordRequestForm = Depends(),db: AsyncSession = Depends(get_session)):\n    async with db as session:\n        query = select(UsuarioModel).filter(UsuarioModel.email == OAuth2PasswordRequestForm.username)\n        result = await session.execute(query)\n        usuario: UsuarioSchemaBase = result.scalars().unique().one_or_none()",
         "detail": "api.v1.endpoints.usuario",
         "documentation": {}
     },
@@ -972,7 +1024,7 @@
         "kind": 5,
         "importPath": "api.v1.api",
         "description": "api.v1.api",
-        "peekOfCode": "api_router = APIRouter()\napi_router.include_router(usuario.router, prefix='/usuarios', tags=['usuarios'])\napi_router.include_router(tarefa.router, prefix='/tarefas', tags=['tarefas'])",
+        "peekOfCode": "api_router = APIRouter()\napi_router.include_router(usuario.router, prefix='/usuarios', tags=['usuarios'])\napi_router.include_router(tarefa.router, prefix='/tarefas', tags=['tarefas'])\napi_router.include_router(usuario.routerLogin, prefix='/usuarios', tags=['usuarios'])",
         "detail": "api.v1.api",
         "documentation": {}
     },
@@ -981,7 +1033,7 @@
         "kind": 2,
         "importPath": "core.auth",
         "description": "core.auth",
-        "peekOfCode": "def criar_acess_token(usuario_id: str):\n    payload = {}\n    payload['sub'] = usuario_id\n    expiracao = str(datetime.utcnow() + timedelta(EXPIRES_IN_MIN))\n    payload['ext'] = expiracao\n    token_jwt = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITH)\n    return token_jwt\nasync def get_current_user(token: str = Depends(oauth2_scheme), db = Depends(get_session)):\n    credentials_exception = HTTPException(\n        status_code=status.HTTP_401_UNAUTHORIZED,",
+        "peekOfCode": "def criar_acess_token(usuario_id: str):\n    expiracao = str(datetime.utcnow() + timedelta(EXPIRES_IN_MIN))\n    payload = {\n        'sub': usuario_id,\n        'ext': expiracao\n        }\n    token_jwt = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITH)\n    return token_jwt\nasync def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession = Depends(get_session)):\n    credentials_exception = HTTPException(",
         "detail": "core.auth",
         "documentation": {}
     },
@@ -990,7 +1042,7 @@
         "kind": 5,
         "importPath": "core.auth",
         "description": "core.auth",
-        "peekOfCode": "EXPIRES_IN_MIN = 60*24*7\noauth2_scheme = OAuth2PasswordBearer(tokenUrl=\"token\")\ndef criar_acess_token(usuario_id: str):\n    payload = {}\n    payload['sub'] = usuario_id\n    expiracao = str(datetime.utcnow() + timedelta(EXPIRES_IN_MIN))\n    payload['ext'] = expiracao\n    token_jwt = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITH)\n    return token_jwt\nasync def get_current_user(token: str = Depends(oauth2_scheme), db = Depends(get_session)):",
+        "peekOfCode": "EXPIRES_IN_MIN = 60*24*7\noauth2_scheme = OAuth2PasswordBearer(tokenUrl=\"/api/v1/usuarios/login\")\ndef criar_acess_token(usuario_id: str):\n    expiracao = str(datetime.utcnow() + timedelta(EXPIRES_IN_MIN))\n    payload = {\n        'sub': usuario_id,\n        'ext': expiracao\n        }\n    token_jwt = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITH)\n    return token_jwt",
         "detail": "core.auth",
         "documentation": {}
     },
@@ -999,7 +1051,7 @@
         "kind": 5,
         "importPath": "core.auth",
         "description": "core.auth",
-        "peekOfCode": "oauth2_scheme = OAuth2PasswordBearer(tokenUrl=\"token\")\ndef criar_acess_token(usuario_id: str):\n    payload = {}\n    payload['sub'] = usuario_id\n    expiracao = str(datetime.utcnow() + timedelta(EXPIRES_IN_MIN))\n    payload['ext'] = expiracao\n    token_jwt = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITH)\n    return token_jwt\nasync def get_current_user(token: str = Depends(oauth2_scheme), db = Depends(get_session)):\n    credentials_exception = HTTPException(",
+        "peekOfCode": "oauth2_scheme = OAuth2PasswordBearer(tokenUrl=\"/api/v1/usuarios/login\")\ndef criar_acess_token(usuario_id: str):\n    expiracao = str(datetime.utcnow() + timedelta(EXPIRES_IN_MIN))\n    payload = {\n        'sub': usuario_id,\n        'ext': expiracao\n        }\n    token_jwt = jwt.encode(payload, SECRET_KEY, algorithm=ALGORITH)\n    return token_jwt\nasync def get_current_user(token: str = Depends(oauth2_scheme), db: AsyncSession = Depends(get_session)):",
         "detail": "core.auth",
         "documentation": {}
     },
@@ -1062,7 +1114,7 @@
         "kind": 6,
         "importPath": "models.usuario_model",
         "description": "models.usuario_model",
-        "peekOfCode": "class UsuarioModel(settings.DBBaseModel):\n    __tablename__ = 'usuarios' \n    id: int = Column(Integer, primary_key=True, autoincrement=True)\n    nome: str = Column(String(255), nullable= True)\n    email: str = Column(String(255), nullable=False, unique=True)\n    senha: str = Column(String(255), nullable= False)\n    criado_em: str = Column(DateTime, nullable= True)\n    atualizado_em: str = Column(DateTime, nullable= True)\n    tarefas = relationship(\n        'TarefaModel',",
+        "peekOfCode": "class UsuarioModel(settings.DBBaseModel):\n    __tablename__ = 'usuarios' \n    id: int = Column(Integer, primary_key=True, autoincrement=True)\n    nome: str = Column(String(255), nullable= True)\n    imagem: str = Column(String(255), nullable= True)\n    email: str = Column(String(255), nullable=False, unique=True)\n    senha: str = Column(String(255), nullable= False)\n    criado_em: str = Column(DateTime, nullable= True)\n    atualizado_em: str = Column(DateTime, nullable= True)\n    tarefas = relationship(",
         "detail": "models.usuario_model",
         "documentation": {}
     },
@@ -1080,7 +1132,7 @@
         "kind": 6,
         "importPath": "schemas.usuario_schema",
         "description": "schemas.usuario_schema",
-        "peekOfCode": "class UsuarioSchemaBase(SCBaseModel):\n    id: Optional[int]\n    nome: str\n    email: str\n    criado_em: Optional[datetime]\n    atualizado_em: Optional[datetime]\n    class Config:\n        orm_mode = True\nclass UsuarioSchemaCreate(UsuarioSchemaBase):\n    senha: str",
+        "peekOfCode": "class UsuarioSchemaBase(SCBaseModel):\n    id: Optional[int]\n    nome: str\n    email: str\n    imagem: Optional[str]\n    criado_em: Optional[datetime]\n    atualizado_em: Optional[datetime]\n    class Config:\n        orm_mode = True\nclass UsuarioSchemaCreate(UsuarioSchemaBase):",
         "detail": "schemas.usuario_schema",
         "documentation": {}
     },
@@ -1089,16 +1141,7 @@
         "kind": 6,
         "importPath": "schemas.usuario_schema",
         "description": "schemas.usuario_schema",
-        "peekOfCode": "class UsuarioSchemaCreate(UsuarioSchemaBase):\n    senha: str\n    class Config:\n        orm_mode = True\nclass LoginData(SCBaseModel):\n    email: EmailStr\n    senha: str \nclass UsuarioSchemaToken(SCBaseModel):\n    usuario: UsuarioSchemaBase\n    acess_token: str",
-        "detail": "schemas.usuario_schema",
-        "documentation": {}
-    },
-    {
-        "label": "LoginData",
-        "kind": 6,
-        "importPath": "schemas.usuario_schema",
-        "description": "schemas.usuario_schema",
-        "peekOfCode": "class LoginData(SCBaseModel):\n    email: EmailStr\n    senha: str \nclass UsuarioSchemaToken(SCBaseModel):\n    usuario: UsuarioSchemaBase\n    acess_token: str\nclass UsuarioSchemaTarefa(UsuarioSchemaBase):\n    tarefas: List[TarefaSchema]",
+        "peekOfCode": "class UsuarioSchemaCreate(UsuarioSchemaBase):\n    senha: str\n    class Config:\n        orm_mode = True\nclass UsuarioSchemaToken(SCBaseModel):\n    usuario: UsuarioSchemaBase\n    acess_token: str\nclass UsuarioSchemaTarefa(UsuarioSchemaBase):\n    tarefas: List[TarefaSchema]",
         "detail": "schemas.usuario_schema",
         "documentation": {}
     },
@@ -1152,7 +1195,7 @@
         "kind": 5,
         "importPath": "main",
         "description": "main",
-        "peekOfCode": "app = FastAPI(title='API - Artigos')\napp.include_router(api_router, prefix=settings.API_V1)\nif __name__ == '__main__':\n    import uvicorn\n    uvicorn.run('main:app', port=8080, log_level='info', reload=True)",
+        "peekOfCode": "app = FastAPI(title='API - Tarefas')\napp.include_router(api_router, prefix=settings.API_V1)\nif __name__ == '__main__':\n    import uvicorn\n    uvicorn.run('main:app', port=8080, log_level='info', reload=True)",
         "detail": "main",
         "documentation": {}
     }

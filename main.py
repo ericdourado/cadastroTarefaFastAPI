@@ -3,7 +3,7 @@ from core.configs import settings
 from api.v1.api import api_router
 
 
-app = FastAPI(title='API - Artigos')
+app = FastAPI(title='API - Tarefas')
 app.include_router(api_router, prefix=settings.API_V1)
 
 

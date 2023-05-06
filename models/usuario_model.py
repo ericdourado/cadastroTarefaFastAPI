@@ -7,6 +7,7 @@ class UsuarioModel(settings.DBBaseModel):
     __tablename__ = 'usuarios' 
     id: int = Column(Integer, primary_key=True, autoincrement=True)
     nome: str = Column(String(255), nullable= True)
+    imagem: str = Column(String(255), nullable= True)
     email: str = Column(String(255), nullable=False, unique=True)
     senha: str = Column(String(255), nullable= False)
     criado_em: str = Column(DateTime, nullable= True)
