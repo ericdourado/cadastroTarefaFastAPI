@@ -33,7 +33,7 @@ async def autentica_user(OAuth2PasswordRequestForm: OAuth2PasswordRequestForm = 
         query = select(UsuarioModel).filter(UsuarioModel.email == OAuth2PasswordRequestForm.username)
         result = await session.execute(query)
         usuario: UsuarioSchemaBase = result.scalars().unique().one_or_none()
-    
+
         if(usuario and (comparar_senha(OAuth2PasswordRequestForm.password, usuario.senha))):
             token = criar_acess_token(str(usuario.id))
             return {
@@ -41,7 +41,7 @@ async def autentica_user(OAuth2PasswordRequestForm: OAuth2PasswordRequestForm = 
                 "token_type": "bearer"
             }
         else:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Usuário não encontrado")    
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email ou senha incorretos")    
 
             
 @router.post('/signup', status_code=status.HTTP_201_CREATED, response_model=UsuarioSchemaBase)

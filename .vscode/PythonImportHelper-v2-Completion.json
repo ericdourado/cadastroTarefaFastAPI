@@ -993,6 +993,14 @@
         "documentation": {}
     },
     {
+        "label": "CORSMiddleware",
+        "importPath": "fastapi.middleware.cors",
+        "description": "fastapi.middleware.cors",
+        "isExtraImport": true,
+        "detail": "fastapi.middleware.cors",
+        "documentation": {}
+    },
+    {
         "label": "router",
         "kind": 5,
         "importPath": "api.v1.endpoints.tarefa",
@@ -1195,7 +1203,16 @@
         "kind": 5,
         "importPath": "main",
         "description": "main",
-        "peekOfCode": "app = FastAPI(title='API - Tarefas')\napp.include_router(api_router, prefix=settings.API_V1)\nif __name__ == '__main__':\n    import uvicorn\n    uvicorn.run('main:app', port=8080, log_level='info', reload=True)",
+        "peekOfCode": "app = FastAPI(title='API - Tarefas')\napp.include_router(api_router, prefix=settings.API_V1)\norigins = [\n    \"http://localhost\",\n    \"http://localhost:8080\",\n    \"http://127.0.0.1:5173\"\n]\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=origins,",
+        "detail": "main",
+        "documentation": {}
+    },
+    {
+        "label": "origins",
+        "kind": 5,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "origins = [\n    \"http://localhost\",\n    \"http://localhost:8080\",\n    \"http://127.0.0.1:5173\"\n]\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=origins,\n    allow_credentials=True,\n    allow_methods=[\"*\"],",
         "detail": "main",
         "documentation": {}
     }
