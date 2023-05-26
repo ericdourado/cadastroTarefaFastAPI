@@ -1,6 +1,6 @@
 import api.v1.endpoints
 from typing import List
-from fastapi import APIRouter, status, Depends, HTTPException, Response
+from fastapi import APIRouter, status, Depends, HTTPException, Response, Request
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.future import select
 from models.usuario_model import UsuarioModel
@@ -35,11 +35,17 @@ async def post_tarefa(tarefa: TarefaSchema, db: AsyncSession = Depends(get_sessi
 
 
 @router.get('/', response_model=List[TarefaSchema])
-async def get_tarefas(db: AsyncSession = Depends(get_session), usuarioLogado = Depends(get_current_user)):
+async def get_tarefas(request: Request, db: AsyncSession = Depends(get_session), usuarioLogado = Depends(get_current_user)):
+    page: int = int(request.query_params.get('page'))
+    page_size: int = int(request.query_params.get('page_size'))
+    offset: int = ((page - 1) * page_size)  
+
     async with db as session:
-        query = select(TarefaModel).filter(TarefaModel.usuario_id == usuarioLogado.id)
+        query = select(TarefaModel).filter(TarefaModel.usuario_id == usuarioLogado.id) if request.query_params.get('nome') == None else select(TarefaModel).filter(TarefaModel.usuario_id == usuarioLogado.id).filter(TarefaModel.nome == request.query_params.get('nome')) 
+        query = query.limit(page_size).offset(offset)
         result = await session.execute(query)
         tarefas: List[TarefaSchema] = result.scalars().unique().all()
+    
         return tarefas
 
 

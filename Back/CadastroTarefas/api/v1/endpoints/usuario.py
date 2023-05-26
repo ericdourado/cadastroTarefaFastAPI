@@ -44,11 +44,12 @@ async def autentica_user(OAuth2PasswordRequestForm: OAuth2PasswordRequestForm = 
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email ou senha incorretos")    
 
             
-@router.post('/signup', status_code=status.HTTP_201_CREATED, response_model=UsuarioSchemaBase)
-async def post_usuario(nome = Form(...), email = Form(...), senha = Form(...),db: AsyncSession = Depends(get_session), file: UploadFile = File(..., media_type='image/jpeg')):
+@routerLogin.post('/signup', status_code=status.HTTP_201_CREATED, response_model=UsuarioSchemaBase)
+async def post_usuario(nome = Form(...), email = Form(...), senha = Form(...), db: AsyncSession = Depends(get_session), file: UploadFile = File(..., media_type='image/jpeg')):
     file.filename = f"{uuid.uuid4()}.jpg"
     contents = await file.read()
     dir = os.path.abspath('./assets/image/')
+
     
     with open(f"{dir}{file.filename}", "wb") as f:
         f.write(contents)
