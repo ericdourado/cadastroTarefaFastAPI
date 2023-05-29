@@ -24,7 +24,7 @@ export default {
     }).then(response => {
       if (response.status == 200) {
         this.verificaLogin = 'Sair'
-        this.rota = '/sair'
+        this.rota = '/tarefas'
         this.$router.push('/tarefas');
 
       } else {

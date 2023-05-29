@@ -1,6 +1,4 @@
-<script setup>
 
-</script>
 
 <template>
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -11,15 +9,27 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="/{{rota}}">{{verificaLogin}}</a>
-          </li>
+        <ul class="navbar-nav">
+          <div class="menu">
+            <li class="nav-item">
+              <a class="nav-link" href="/tarefas">Tarefas</a>
+            </li>
+            <button @click="logout" class="btn text-secondary">{{ verificaLogin }}</button>
+          </div>
         </ul>
       </div>
     </div>
   </nav>
 </template>
+
+
+<style>
+.menu {
+  display: flex;
+  justify-content: space-between;
+
+}
+</style>
 
 
 <script>
@@ -32,6 +42,21 @@ export default {
       type: String,
     },
   },
+  data() {
+    return {
+
+    }
+  },
+  mounted() {
+
+  },
+  methods: {
+    logout(e) {
+      document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      this.$router.push('/login');
+    }
+  }
+
 }
 </script>
 
