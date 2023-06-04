@@ -1076,7 +1076,7 @@
         "kind": 6,
         "importPath": "core.configs",
         "description": "core.configs",
-        "peekOfCode": "class Settings(BaseSettings):\n    API_V1: str = '/api/v1'\n    DB_URL: str = 'mysql+asyncmy://root:root@localhost/seed?charset=utf8mb4'\n    DBBaseModel = declarative_base()\n    class Config:\n        case_sensitive: True\nsettings = Settings()",
+        "peekOfCode": "class Settings(BaseSettings):\n    API_V1: str = '/api/v1'\n    DB_URL: str = 'mysql+asyncmy://root:root@db/seed?charset=utf8mb4'\n    DBBaseModel = declarative_base()\n    class Config:\n        case_sensitive: True\nsettings = Settings()",
         "detail": "core.configs",
         "documentation": {}
     },
@@ -1211,7 +1211,7 @@
         "kind": 5,
         "importPath": "main",
         "description": "main",
-        "peekOfCode": "app = FastAPI(title='API - Tarefas')\napp.include_router(api_router, prefix=settings.API_V1)\norigins = [\n    \"http://localhost\",\n    \"http://localhost:8080\",\n    \"http://127.0.0.1:5173\"\n]\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=origins,",
+        "peekOfCode": "app = FastAPI(title='API - Tarefas')\napp.include_router(api_router, prefix=settings.API_V1)\norigins = [\n    \"http://localhost\",\n    \"http://localhost:8080\",\n    \"http://127.0.0.1:5173\",\n    \"http://127.0.0.1:15400\",\n    \"http://127.0.0.1:8000\",\n    \"http://localhost:15400\",\n    \"http://localhost:8000\"",
         "detail": "main",
         "documentation": {}
     },
@@ -1220,7 +1220,7 @@
         "kind": 5,
         "importPath": "main",
         "description": "main",
-        "peekOfCode": "origins = [\n    \"http://localhost\",\n    \"http://localhost:8080\",\n    \"http://127.0.0.1:5173\"\n]\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=origins,\n    allow_credentials=True,\n    allow_methods=[\"*\"],",
+        "peekOfCode": "origins = [\n    \"http://localhost\",\n    \"http://localhost:8080\",\n    \"http://127.0.0.1:5173\",\n    \"http://127.0.0.1:15400\",\n    \"http://127.0.0.1:8000\",\n    \"http://localhost:15400\",\n    \"http://localhost:8000\"\n]\napp.add_middleware(",
         "detail": "main",
         "documentation": {}
     }

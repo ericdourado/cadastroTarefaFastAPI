@@ -144,7 +144,7 @@ export default {
     },
     mounted() {
         this.token = document.cookie.split('token=');
-        fetch(`http://localhost:8080/api/v1/tarefas?page=${this.paginaAtual}&page_size=10`, {
+        fetch(`http://localhost:15400/api/v1/tarefas?page=${this.paginaAtual}&page_size=10`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -164,7 +164,7 @@ export default {
     methods: {
         trocarPagina(numeroPagina) {
             this.paginaAtual = numeroPagina;
-            fetch(`http://localhost:8080/api/v1/tarefas?page=${this.paginaAtual}&page_size=10`, {
+            fetch(`http://localhost:15400/api/v1/tarefas?page=${this.paginaAtual}&page_size=10`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -178,7 +178,7 @@ export default {
 
         },
         salvarTarefa() {
-            const url = 'http://localhost:8080/api/v1/tarefas';
+            const url = 'http://localhost:15400/api/v1/tarefas';
             const config = {
                 headers: {
                     'Content-Type': 'application/json',
@@ -205,7 +205,7 @@ export default {
         },
 
         excluirTarefa(id) {
-            fetch(`http://localhost:8080/api/v1/tarefas/${id}`, {
+            fetch(`http://localhost:15400/api/v1/tarefas/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -221,7 +221,7 @@ export default {
                 concluido: ''
             }
             this.token = document.cookie.split('token=');
-            await fetch(`http://localhost:8080/api/v1/tarefas/${id}`, {
+            await fetch(`http://localhost:15400/api/v1/tarefas/${id}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -234,7 +234,7 @@ export default {
                     alterarTarefa.descricao = data.descricao
                     alterarTarefa.concluido = event.target.checked;
                 })
-            const url = `http://localhost:8080/api/v1/tarefas/${id}`; // Substitua pela URL correta do seu servidor
+            const url = `http://localhost:15400/api/v1/tarefas/${id}`; // Substitua pela URL correta do seu servidor
             const config = {
                 headers: {
                     'Content-Type': 'application/json',
@@ -253,7 +253,7 @@ export default {
 
         async pegaTarefa(id) {
             this.token = document.cookie.split('token=');
-            await fetch(`http://localhost:8080/api/v1/tarefas/${id}`, {
+            await fetch(`http://localhost:15400/api/v1/tarefas/${id}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -276,7 +276,7 @@ export default {
         },
         async putTarefa() {
 
-            const url = `http://localhost:8080/api/v1/tarefas/${this.editarTarefa.id}`;
+            const url = `http://localhost:15400/api/v1/tarefas/${this.editarTarefa.id}`;
             const config = {
                 headers: {
                     'Content-Type': 'application/json',

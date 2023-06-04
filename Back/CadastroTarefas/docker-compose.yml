@@ -1,0 +1,28 @@
+version: '3.1'
+services:
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./create_schema.sql:/docker-entrypoint-initdb.d/create_schema.sql
+    networks:
+      - cadastrotarefas_network
+    ports:
+      - "5003:3306"
+    
+
+  core_api:
+    build: .
+    container_name: "core-api-container"
+    ports:
+      - "15400:15400"
+    volumes:
+      - ./:/app
+    networks:
+      - cadastrotarefas_network
+
+networks:
+  cadastrotarefas_network:
+    driver: bridge

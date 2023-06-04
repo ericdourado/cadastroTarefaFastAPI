@@ -87,7 +87,7 @@ export default {
     },
     methods: {
         login(e) {
-            let urlBase = 'http://localhost:8080/api/v1/usuarios/login';
+            let urlBase = 'http://localhost:15400/api/v1/usuarios/login';
             let configuracao = {
                 method: 'post',
                 body: new URLSearchParams({

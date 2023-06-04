@@ -82,7 +82,7 @@ export default {
         },
 
         registrar(e) {
-            let urlBase = 'http://localhost:8080/api/v1/usuarios/signup'
+            let urlBase = 'http://localhost:15400/api/v1/usuarios/signup'
 
             let formData = new FormData();
             formData.append('nome', this.nome)

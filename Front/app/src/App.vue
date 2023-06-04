@@ -15,7 +15,7 @@ export default {
   mounted() {
     let token = document.cookie;
     let arr_token = token.split('token=');
-    fetch('http://localhost:8080/api/v1/usuarios/me', {
+    fetch('http://localhost:15400/api/v1/usuarios/me', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
